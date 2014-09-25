@@ -7,7 +7,6 @@ long long lcm( vector< int > a ) {
 	for(int i=1;i<s;i++) lcm = (lcm * a[i])/__gcd(lcm,(long long)a[i]);
 	return lcm;
 }
-	}
 
 
 int main(){
