@@ -24,7 +24,7 @@ long long factorialMod(int k, long long mod){
 	/*
 	*	Finds (K!)%mod using modular
 	*	Only useful when m is really high 10^9 and the difference between mod 
-	*  	ans k is relativelly small less than 10^3
+	*  	ans k is relativelly small, less than 10^3
 	*
 	* 	It uses Wilsons Algorithm which says (n-1)! = n-1 in modular prime number system
 	*/

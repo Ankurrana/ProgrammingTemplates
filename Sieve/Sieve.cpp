@@ -19,9 +19,7 @@ pair< bitset< 1000001 > , vector< int > > sieve(int n){
 }
 
 int main(){
-	vector< int > a(sieve(123).second);
-
-		
+	vector< int > a(sieve(123).second);		
 	vector< int > b = sieve(1000000).second;
 	for (int i = 0; i < b.size() ; ++i)
 	{
