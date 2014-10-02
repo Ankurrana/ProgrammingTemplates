@@ -1,0 +1,11 @@
+#!/bin/bash
+g++ MergeIntervalSets.cpp -o p 
+if [  "$?" = "0" ] ; then
+	./p < input.txt > output.txt	
+	cat output.txt
+fi
+
+
+
+echo  
+
