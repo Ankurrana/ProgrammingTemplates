@@ -63,7 +63,7 @@ public:
 		nodes[parent(v)].parent = parent(u);
 		nodes[v].parent =  parent(u);
 	}
-	int count(int k){ return nodes[parent(k)].count; } /* returns the number of elements in its list */
+	int NumberMembers(int k){ return nodes[parent(k)].count; } /* returns the number of elements in its list */
 
 	void desc(){
 		int i = 0;
@@ -74,7 +74,7 @@ public:
 
 };
 
-
+/* Question of strongly Connected components can also be done using this */
 
 int main(){
 	DisjointSet set;
@@ -89,7 +89,6 @@ int main(){
 	set.join(2,3);
 	set.join(3,4);
 
-	// cout << set.isSameSet(2,4) << endl;
 	set.desc();
 
 	return 0; 	

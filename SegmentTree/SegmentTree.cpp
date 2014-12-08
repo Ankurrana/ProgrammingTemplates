@@ -38,24 +38,53 @@ vector< int > a;
 
 class N{
 public:
-	int minimum;	
 	int maximum;
-	int lazy;/*   This Variable holds the data which is required in lazy update */
-
-	N():minimum(1e8),maximum(-1 * 1e8){ lazy = 0;};	
+	bool isincreasing;
+	bool isdecreasing;
+	int left;
+	int right;
+	lld sum;
+	N():maximum(-1 * 1e8){ 
+		sum = 0;
+		isdecreasing = true;
+		isincreasing = true;
+	};	
 	N merge(const N &other){
 		N result;
-		result.minimum =  min( lazy + minimum, other.lazy +  other.minimum);
-		result.maximum =  max( lazy + maximum, other.lazy + other.maximum);
+		result.sum = sum + other.sum;
+		result.left = left;
+		result.right = other.right;
+
+		if( (right >= other.left) && (isdecreasing == true) && (other.isdecreasing == true)){
+			result.isdecreasing = true;
+		}else{
+			result.isdecreasing = false;
+		}
+
+		if( (right <= other.left) && (isincreasing==true) && (other.isincreasing == true)){
+			result.isincreasing = true;
+		}else{
+			result.isincreasing = false;
+		}
+		// result.isincreasing = ((isincreasing && other.isincreasing) && (other.right <=left)) ;
+		// result.isdecreasing = ((isdecreasing && other.isdecreasing) && (right >= other.left) ); 
+		result.maximum =  max( maximum,other.maximum);
 		return result;
 	}
 };
 
-N SegTree[1000000];
+N SegTree[2000000];
 
 N buildTree(int index, int l, int r){
 	int mid = (l+r)>>1;
-	if( l == r ) {  SegTree[index].maximum = SegTree[index].minimum= a[l]; }
+	if( l == r ) {  
+		SegTree[index].maximum = a[l]; 
+		SegTree[index].sum = a[l];
+		SegTree[index].isincreasing = true;
+		SegTree[index].isdecreasing = true;
+		SegTree[index].left = a[l];
+		SegTree[index].right = a[l];
+	}
 	else{
 		SegTree[index] = buildTree(2*index+1,l,mid).merge(buildTree(2*index+2,mid+1,r));
 	}
@@ -66,7 +95,7 @@ N buildTree(int index, int l, int r){
 /* The updates are of type a, adding p to all elements in the range l to r */
 
 
-N query(int index,int l,int r, int ql, int qr,int p){
+N query(int index,int l,int r, int ql, int qr){
 	if( ql <= l && r <= qr )
 		return SegTree[index]; 
 	int mid = (l+r)>>1;
@@ -77,44 +106,45 @@ N query(int index,int l,int r, int ql, int qr,int p){
 }
 
 
-void update(int index, int l , int r, int ql, int qr, int p){
+void update(int index, int l , int r, int idx ,int p){
 
+	int mid = (l+r)>>1;
+	if( l == r ){
+		SegTree[index].maximum = p;
+		SegTree[index].sum = p;
+		SegTree[index].left = p;
+		SegTree[index].right = p;
+		SegTree[index].isdecreasing = true;
+		SegTree[index].isincreasing = true;
+
+		return ;
+	}
+
+	if( idx <= mid ) { 
+		update(2*index+1,l,mid,idx,p);
+		
+	}else{ 
+		update(2*index+2,mid+1,r,idx,p);
+	}
+
+	SegTree[index] = SegTree[2*index+1].merge( SegTree[2*index + 2] );
 }
+
 int main(){
 	lld n,m,i,j,l,r,k,p,d,q;
 	vi::iterator it;
 
 	get(n);
 	fill(a,n);
-
-
 	buildTree(0,0,n-1);
-
-
-
-	get(q);
-	while(q--){
-		get(l);
-		get(r);
-
-		N temp = query(0,0,n-1,l,r);
-
-		int mymin = temp.minimum;
-
-
-
-		double mymax3 = (temp.maximum);
-
-		int mymax1 = 0 , mymax2 = 0;
-		if(l>0) 
-			mymax1 = query(0,0,n-1,0,l-1).maximum;
-		if(r < n-1)
-			mymax2 = query(0,0,n-1,r+1,n-1).maximum;
-
-
-		printf("%.1f\n", max(  mymin +  (mymax3 - mymin)/2 ,(double)mymin + (double)max(mymax1,mymax2)     )  );
-
-
+	get(m);
+	lld x,y;
+	while(m--){
+		get(x);
+		get(y);
+		x--;
+		y--;
+		cout << query(0,0,n-1,x,y).maximum << endl;	
 	}
 
 	return 0; 	
