@@ -55,25 +55,27 @@ public:
 			int u = Q.front(); Q.pop();
 			for( it = nodes[u].AL.begin(); it!=nodes[u].AL.end();it++){
 				if(  Distance[it->first] == -1 ){
-				Distance[it->first] = Distance[u] + it->second;
+					Distance[it->first] = Distance[u] + it->second;
 					Q.push(it->first);
 				}
 			}
 		}
 		return Distance;
 	}
+
 };	
 
  int main(){
 	lld n,m,i,j,l,r,k,p,d;
 	vi a;
 	Graph g(6);
+
 	g.add(1,2);
 	g.add(1,3);
 	g.add(1,6);
 	g.add(2,4);
 	g.add(3,5);
-	g.add(3,6);+
+	g.add(3,6);
 
 
 	a = g.bfs(1);
