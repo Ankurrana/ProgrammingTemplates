@@ -34,59 +34,113 @@ void fill(vector<lld> &a, int n){
 	rep(n,i) get(a[i]);
 }
 
+/*  This implementation is point update and range query */
+
+
 class BIT{
 public:
-	vector<lld> tree;
-	lld size;
-	BIT(int n){tree.resize(n+1,0);size = n;}
-	BIT( vector< lld > a ){
-		tree.resize(a.size());
-		size = a.size();
-		for(int i=0;i<a.size();i++){ 
-			update(i,a[i]); 
-		} 
+	int n; /* Number of elements */
+	vector< int > a;
+	vector< int > tree;
+	BIT(int _n){
+		a.push_back(0);
+		n = _n;
+		tree.resize(n+1,0);
 	}
-	void update(int index, lld val){
-		while(index<size){
-			tree[index] += val;
-			index |= (index+1);
+	/* This method is 1 indexed */
+	void update(int add,int idx){
+		/*  Add the number "add" to the index idx */
+		while(idx <= n){
+			tree[idx] += add;
+			idx += idx & -idx;
 		}
 	}
-	lld read(int index){
-		lld sum  = 0;
-		while(index >= 0){
-			sum += tree[index];
-			index = (index & (index+1))-1;
+	void printtree(){
+		show(tree);
+	}
+
+	int CumulativeTill(int idx){
+		int sum = 0;
+		while(idx > 0){
+			sum += tree[idx];
+			idx -= idx & -idx;	
 		}
 		return sum;
 	}
 
+	int at(int idx){
+		return CumulativeTill(idx) - CumulativeTill(idx-1);
+	}
+
+	int rangeSum(int l, int r){
+		return CumulativeTill(r) - CumulativeTill(l-1);
+	}
+
 };
+
+
+
+class BIT2{
+	/* Range Updates and point queries */
+	/* This is usully used in questions where initially all elements are zero  */
+public:
+	vector<int> tree;
+	int n; /* number of elements*/
+	BIT2(int _n){	
+		n = _n;
+		tree.resize(n+1,0);
+	}
+	void update(int a, int idx){
+		while(idx<=n){
+			tree[idx] += a;
+			idx += (idx & -idx);
+			// cout << idx << endl;
+		}
+	}
+	void rangeUpdate(int l, int r, int x){
+		/* Add x from a to b */ 
+		update(x,l);
+		update(-1*x,r+1);
+	}
+	int at(int idx){
+		int ans = 0;
+		while(idx>0){
+			ans += tree[idx];
+			idx -= idx & -idx;
+		}
+		return ans;
+	}
+};
+
 
 int main(){
 	lld n,m,i,j,l,r,k,p,d,q;
 
-	get(n);
-	get(m);
-	get(d);
 
-	lld tree[1000010] = {0};
-	while(m--){
-		char c;
-		scanf("%c",&c);
-		if(c == 'Q'){
-			get(p);
-			lld ans = 0;
-			while(idx > 0){ ans += tree[idx] ; idx -= (idx & -idx);}
-			printf("%lld\n",ans+d);
-		}else{
-			get(p);
-			get(q);
-			get(k);
-			q++
-			while(p<=n){ tree[p] += k; p |= (p+1); }
-			while(q<=n){ tree[q] +=-k; q |= (q+1); }
+
+	lld t;
+	get(t);
+	while(t--){
+
+		get(n);
+		get(m);
+		BIT2 bit(n);
+		while(m--){
+			get(l);
+			get(r);
+			get(k);	
+			l++;
+			r++;
+
+			bit.rangeUpdate(l,r,k);
 		}
+		get(q);
+		while(q--){
+			get(k);
+			k++;
+			printf("%d\n",bit.at(k));
+		}
+
 	}
 
 	return 0; 	

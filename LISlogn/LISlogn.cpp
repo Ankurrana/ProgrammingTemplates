@@ -73,6 +73,38 @@ void fill(vector<int> &a, int n){
 }
 
 
+vector<int> LIS(vector<int> &a){
+	vector<int> lis; /*  this is not the actual lis , thought its lenght is same as that of the actual lis */
+	vector<int>::iterator it;
+	lis.push_back(a[0]);
+	vector< int > possiblePos(a.size());
+	possiblePos[0] = 0; /* 0th index could always get 0th position  */
+	int l = 1;
+	for(int i=1;i<a.size();i++){
+		if( lis[lis.size()-1 ] > a[i]){
+			lis.push_back(a[i]);
+			possiblePos[i] = l++; /* Variable l maintains the lenght of the lis */
+		}
+		else{ 
+			it = upper_bound(lis.begin(),lis.end(),a[i]);
+			*it = a[i];
+			possiblePos.[i] = (it - lis.begin());
+		}
+	}
+
+	vector<int> finallis;
+	for(int i=a.size()-1;i>=0;i--){
+		if( possiblePos[i] == l ){
+			finallis.push_back(a[i]); 
+			l--;
+		}
+	}
+
+	reverse(finallis.begin(),finallis.end());
+	return finallis;
+}
+
+
 
 int main(){
 	lld n,m,i,j,l,r,k,p,d;
@@ -80,8 +112,10 @@ int main(){
 	vi a,b;
 	get(n);
 	fill(a,n);
-	b = longestIncreasingSubsequence(a);
+	b = LIS(a);
 	show(b);
+
+	cout << "Asdad"; 
 	return 0; 	
  }
 

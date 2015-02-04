@@ -34,40 +34,28 @@ void fill(vector<int> &a, int n){
 	rep(n,i) get(a[i]);
 }
 
-vector< int > a; 
+vector< long long int > a; 
 
 class N{
 public:
-	int maximum;
-	bool isincreasing;
-	bool isdecreasing;
-	int left;
-	int right;
+	lld maximum;
 	lld sum;
-	N():maximum(-1 * 1e8){ 
+	
+	lld interdata; 
+	/*  
+		This is used as an intermediate data used in the update function , currently no changes are made to the 
+		actual array itself , this intermediate data somehow maintains the information of the chages made to a range denoted 
+		by the Segtree node. This technique can be used in segment trees wherein the changes are relative to the 
+		initial elements , But in case the element itself is changed then we need to make changes to the system.
+	*/
+	
+	N(){ 
 		sum = 0;
-		isdecreasing = true;
-		isincreasing = true;
+		maximum = -1*1e8;
 	};	
 	N merge(const N &other){
 		N result;
 		result.sum = sum + other.sum;
-		result.left = left;
-		result.right = other.right;
-
-		if( (right >= other.left) && (isdecreasing == true) && (other.isdecreasing == true)){
-			result.isdecreasing = true;
-		}else{
-			result.isdecreasing = false;
-		}
-
-		if( (right <= other.left) && (isincreasing==true) && (other.isincreasing == true)){
-			result.isincreasing = true;
-		}else{
-			result.isincreasing = false;
-		}
-		// result.isincreasing = ((isincreasing && other.isincreasing) && (other.right <=left)) ;
-		// result.isdecreasing = ((isdecreasing && other.isdecreasing) && (right >= other.left) ); 
 		result.maximum =  max( maximum,other.maximum);
 		return result;
 	}
@@ -80,10 +68,6 @@ N buildTree(int index, int l, int r){
 	if( l == r ) {  
 		SegTree[index].maximum = a[l]; 
 		SegTree[index].sum = a[l];
-		SegTree[index].isincreasing = true;
-		SegTree[index].isdecreasing = true;
-		SegTree[index].left = a[l];
-		SegTree[index].right = a[l];
 	}
 	else{
 		SegTree[index] = buildTree(2*index+1,l,mid).merge(buildTree(2*index+2,mid+1,r));
@@ -95,7 +79,7 @@ N buildTree(int index, int l, int r){
 /* The updates are of type a, adding p to all elements in the range l to r */
 
 
-N query(int index,int l,int r, int ql, int qr){
+N query(int index,int l,int r, int ql, int qr,lld ){
 	if( ql <= l && r <= qr )
 		return SegTree[index]; 
 	int mid = (l+r)>>1;
@@ -105,10 +89,19 @@ N query(int index,int l,int r, int ql, int qr){
 	return  n1.merge(n2);
 }
 
-
-void update(int index, int l , int r, int idx ,int p){
+/*
+  This implementation of update doesn't ever 
+*/
+void update(int index, int l , int r, int ql,int qr ,int p){
 
 	int mid = (l+r)>>1;
+	
+	if(  l>=ql && qr<=r ){
+			/* 
+				make chages to the interdata element of the node
+			*/
+	}	
+
 	if( l == r ){
 		SegTree[index].maximum = p;
 		SegTree[index].sum = p;
